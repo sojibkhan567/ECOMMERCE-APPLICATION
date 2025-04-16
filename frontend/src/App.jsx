@@ -8,6 +8,9 @@ import Login from './components/admin/Login'
 import Dashboard from './components/admin/Dashboard'
 import { ToastContainer } from 'react-toastify'
 import { AdminRequireAuth } from './components/admin/AdminRequireAuth'
+import { default as ShowCategories } from './components/admin/category/Show';
+import { default as CreateCategories } from './components/admin/category/Create';
+import { default as EditCategories } from './components/admin/category/Edit';
 
 
 
@@ -24,13 +27,33 @@ function App() {
           <Route path='/checkout' element={<Checkout />} />
 
           <Route path='/admin/login' element={<Login />} />
+
           <Route path='/admin/dashboard' element={
             <AdminRequireAuth>
               <Dashboard />
             </AdminRequireAuth>
           } />
+
+          <Route path='/admin/categories' element={
+            <AdminRequireAuth>
+              <ShowCategories />
+            </AdminRequireAuth>
+          } />
+
+          <Route path='/admin/categories/create' element={
+            <AdminRequireAuth>
+              <CreateCategories />
+            </AdminRequireAuth>
+          } />
+
+          <Route path='/admin/categories/edit/:id' element={
+            <AdminRequireAuth>
+              <EditCategories />
+            </AdminRequireAuth>
+          } />
+
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter >
       <ToastContainer />
     </>
   )

@@ -78,7 +78,7 @@ class CategoryController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:categories'
+            'name' => 'required'
         ]);
 
         if ($validator->fails()) {
@@ -100,7 +100,7 @@ class CategoryController extends Controller
     }
 
     // this method will return all categories
-    public function delete($id)
+    public function destroy($id)
     {
         $category = Category::find($id);
 
