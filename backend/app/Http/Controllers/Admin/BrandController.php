@@ -102,7 +102,7 @@ class BrandController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'name' => 'required|unique:categories'
+            'name' => 'required'
         ]);
 
         if ($validator->fails()) {

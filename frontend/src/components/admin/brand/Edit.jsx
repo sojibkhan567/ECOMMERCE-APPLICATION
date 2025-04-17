@@ -1,27 +1,52 @@
 import React, { useState } from 'react'
 import Layout from '../../common/Layout'
 import Sidebar from '../../common/Sidebar'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'react-toastify'
 import { useForm } from 'react-hook-form'
 import { adminToken, apiUrl } from '../../common/http'
-import { toast } from 'react-toastify'
 
-const Create = () => {
+const Edit = () => {
 
   const [disable, setDisable] = useState(false);
   const navigate = useNavigate();
+  const params = useParams();
+  //const [category, setCategory] = useState([]);
 
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm();
-
-  const saveCategory = async (data) => {
+  } = useForm({
+    defaultValues: async () => {
+      await fetch(`${apiUrl}/brands/${params.id}`, {
+        method: "GET",
+        headers: {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': `Bearer ${adminToken()}`
+        },
+      }).then(res => res.json())
+        .then(result => {
+          if (result.status == 200) {
+            //setCategory(result.data);
+            reset({
+              name: result.data.name,
+              status: result.data.status,
+            })
+          } else {
+            alert('Something went wrong.')
+          }
+        });
+    }
+  });
+  // save brands data to database
+  const saveBrand = async (data) => {
     setDisable(true)
     // fetch category data
-    await fetch(`${apiUrl}/categories`, {
-      method: "POST",
+    await fetch(`${apiUrl}/brands/${params.id}`, {
+      method: "PUT",
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
@@ -33,19 +58,20 @@ const Create = () => {
         setDisable(false);
         if (result.status == 200) {
           toast.success(result.message);
-          navigate('/admin/categories');
+          navigate('/admin/brands');
         } else {
           alert('Something went wrong.')
         }
       });
   }
+
   return (
     <Layout>
       <div className="container">
         <div className="row">
           <div className="d-flex justify-content-between mt-5 pb-3">
-            <h4 className="h4 pb-0 mb-0">Categories / Create</h4>
-            <Link to="/admin/categories" className='btn btn-primary'>Back</Link>
+            <h4 className="h4 pb-0 mb-0">Brands / Edit</h4>
+            <Link to="/admin/brands" className='btn btn-primary'>Back</Link>
           </div>
           {/** Sidebar */}
           <div className="col-md-3">
@@ -53,7 +79,7 @@ const Create = () => {
           </div>
           {/** card */}
           <div className="col-md-9">
-            <form onSubmit={handleSubmit(saveCategory)}>
+            <form onSubmit={handleSubmit(saveBrand)}>
               <div className="card shadow">
                 <div className="card-body p-4">
                   <div className="mb-3">
@@ -86,7 +112,7 @@ const Create = () => {
                   </div>
                 </div>
               </div>
-              <input disabled={disable} className='btn btn-primary mt-3' type="submit" value='Create' />
+              <input disabled={disable} className='btn btn-primary mt-3' type="submit" value='Update' />
             </form>
           </div>
         </div>
@@ -95,4 +121,4 @@ const Create = () => {
   )
 }
 
-export default Create
+export default Edit
