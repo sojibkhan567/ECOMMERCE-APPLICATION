@@ -22,6 +22,8 @@ const Create = ({ placeholder }) => {
   const [disable, setDisable] = useState(false);
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
+  const [gallery, setGallery] = useState([]);
+  const [galleryImages, setGalleryImages] = useState([]);
 
   const navigate = useNavigate();
 
@@ -32,9 +34,10 @@ const Create = ({ placeholder }) => {
     formState: { errors },
   } = useForm();
 
+  // store product data method
   const saveProduct = async (data) => {
 
-    const formData = { ...data, "content": content };
+    const formData = { ...data, "content": content, 'gallery': gallery };
     //console.log(formData);
 
     setDisable(true)
@@ -99,6 +102,41 @@ const Create = ({ placeholder }) => {
           alert('Somthing went wrong.');
         }
       })
+  }
+
+  // handle image upload file
+  const handleFile = async (e) => {
+    const formData = new FormData();
+    const file = e.target.files[0];
+    formData.append('image', file);
+    setDisable(true);
+
+    await fetch(`${apiUrl}/temp-images`, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${adminToken()}`
+      },
+      body: formData
+    }).then(res => res.json())
+      .then(result => {
+        //console.log(result)
+        gallery.push(result.data.id); // add image id for product image
+        setGallery(gallery);
+
+        galleryImages.push(result.data.image_url); // for upload image preview
+        setGalleryImages(galleryImages);
+
+        setDisable(false);
+
+        e.target.value = "";
+      });
+  }
+
+  // handle delete preview image
+  const handleDeleteImage = (image) => {
+    const newGallery = galleryImages.filter((gallery) => gallery != image);
+    setGalleryImages(newGallery);
   }
 
   useEffect(() => {
@@ -281,9 +319,23 @@ const Create = ({ placeholder }) => {
                   <h3 className="py-3 border-bottom mb-3">Gallery</h3>
                   <div className="mb-3">
                     <label className='form-label' htmlFor="">Image</label>
-                    <input className='form-control' type="file" placeholder='qty' />
+                    <input onChange={handleFile} className='form-control' type="file" placeholder='qty' />
                   </div>
-
+                  {/** preview upload image */}
+                  <div className="mb-3">
+                    <div className="row">
+                      {galleryImages && galleryImages.map((image) => {
+                        return (
+                          <div className="col-md-3">
+                            <div className="card shadow">
+                              <img src={image} alt="" className='w-100' />
+                              <button onClick={() => { handleDeleteImage(image) }} className='btn btn-danger'>Delete</button>
+                            </div>
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </div>
 
                 </div>
               </div>
