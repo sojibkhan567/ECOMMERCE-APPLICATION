@@ -310,8 +310,8 @@ const Create = ({ placeholder }) => {
                       }
                       className={`form-control ${errors.is_featured && 'is-invalid'}`}>
                       <option value="">Select a Status</option>
-                      <option value="1">Yes</option>
-                      <option value="0">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
                     </select>
                     {errors.is_featured && <p className='invalid-feedback'>{errors.is_featured?.message}</p>}
                   </div>

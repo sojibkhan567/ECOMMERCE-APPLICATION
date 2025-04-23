@@ -104,7 +104,7 @@ const Show = () => {
                             </td>
                             <td>{product.title}</td>
                             <td>{product.price}</td>
-                            <td>{product.qty}</td>
+                            <td>{product.qty ? product.qty : 0}</td>
                             <td>{product.sku}</td>
                             <td>
                               {product.status == 1 ? <span className="badge text-bg-success">Active</span> : <span className="badge text-bg-danger">Inactive</span>}
