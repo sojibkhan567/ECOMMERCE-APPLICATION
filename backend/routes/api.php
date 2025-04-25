@@ -6,10 +6,17 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SizeController;
 use App\Http\Controllers\Admin\TempImageController;
+use App\Http\Controllers\front\ProductController as FrontProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/admin/login', [AuthController::class, 'authenticate'])->name('auth.login');
+Route::get('/lastest-products', [FrontProductController::class, 'lastestProducts']);
+Route::get('/featured-products', [FrontProductController::class, 'featuredProducts']);
+Route::get('/categories', [FrontProductController::class, 'getCategories']);
+Route::get('/brands', [FrontProductController::class, 'getBrands']);
+Route::get('/get-products', [FrontProductController::class, 'getProducts']);
+
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
